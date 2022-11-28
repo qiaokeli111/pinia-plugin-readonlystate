@@ -1,0 +1,19 @@
+{
+  "name": "pinia-plugin-readonlystate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "vue-demi": "^0.13.11"
+  },
+  "devDependencies": {
+    "pinia": "^2.0.27",
+    "vitest": "^0.25.3",
+    "vue": "^3.2.45"
+  }
+}
