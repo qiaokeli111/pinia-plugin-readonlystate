@@ -1,11 +1,20 @@
 {
   "name": "pinia-plugin-readonlystate",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "1.0.2",
+  "description": "disable change pinia store in component",
+  "main": "src/index.js",
+  "keywords": [
+    "vue",
+    "vue3",
+    "pinia",
+    "pinia-plugin"
+  ],
   "scripts": {
-    "test": "vitest"
+    "test": "vitest",
+    "only": "vitest only"
   },
+  "repository": "https://github.com/qiaokeli111/pinia-plugin-readonlystate",
+  "homepage": "https://github.com/qiaokeli111/pinia-plugin-readonlystate/blob/master/README.md",
   "author": "",
   "license": "ISC",
   "dependencies": {

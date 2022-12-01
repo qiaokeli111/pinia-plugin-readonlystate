@@ -11,29 +11,7 @@ beforeEach(() => {
   app.use(pinia)
   setActivePinia(pinia)
 })
-describe('option type', () => {
-  const useStore = defineStore('user', {
-    state: () => ({
-      num: 0,
-      info: { name: 'xxx', id: 'qqq' },
-      cards: [2, 3]
-    }),
-    actions: {
-      changeNum (num) {
-        this.num = num
-      },
-      changeInfo (info) {
-        this.info = info
-      },
-      changeCards (cards) {
-        this.cards = cards
-      },
-      changeAll (num, info) {
-        this.num = num
-        this.info = info
-      }
-    }
-  })
+function commonFunction(useStore) {
   it('change direct in outside', async () => {
     const store = useStore()
     expect(store.num).toBe(0)
@@ -136,4 +114,60 @@ describe('option type', () => {
     store.changeInfo(info)
     expect(store.info.name).toBe('xxx')
   })
+}
+describe('option type', () => {
+  const useStore = defineStore('user', {
+    state: () => ({
+      num: 0,
+      info: { name: 'xxx', id: 'qqq' },
+      cards: [2, 3]
+    }),
+    actions: {
+      changeNum (num) {
+        this.num = num
+      },
+      changeInfo (info) {
+        this.info = info
+      },
+      changeCards (cards) {
+        this.cards = cards
+      },
+      changeAll (num, info) {
+        this.num = num
+        this.info = info
+      }
+    }
+  })
+  commonFunction(useStore)
+  it('change by action', async () => {
+    const store = useStore()
+
+    store.$reset()
+    expect(store.num).toBe(0);
+    expect(store.info.name).toBe("xxx");
+    expect(store.cards).to.include.members([2, 3]);
+    expect(store.cards.length).toBe(2);
+  })
+})
+describe('setup type', () => {
+  const useStore = defineStore("user", () => {
+    var num = ref(0);
+    var info = ref({ name: "xxx", id: "qqq" });
+    var cards = ref([2, 3]);
+    function changeNum(num1) {
+      num.value = num1;
+    }
+    function changeInfo(info1) {
+      info.value = info1;
+    }
+    function changeCards(cards1) {
+      cards.value = cards1;
+    }
+    function changeAll(num1, info1) {
+      num.value = num;
+      info.value = info;
+    }
+    return { num, info, cards, changeNum, changeInfo, changeCards, changeAll };
+  });
+  commonFunction(useStore)
 })

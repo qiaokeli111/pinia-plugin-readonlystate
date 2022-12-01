@@ -1,15 +1,31 @@
 import { readonly, toRefs, toRaw } from 'vue-demi'
-
 export default (config={}) => {
   let disablePatch = config.disablePatch
   return ({ store, app, pinia, options }) => {
     let $id = store.$id
+
     var originState = pinia.state.value[$id]
     var readonlyState = readonly(pinia.state.value[$id])
     if (disablePatch) {
         pinia.state.value[$id] = readonlyState
     }
-    Object.assign(store, toRefs(readonlyState))
+    const trackedStore = new Proxy(store, {
+      get(target, key, receiver) {
+        if (key in originState) {
+          return readonlyState[key]
+        }else if(key === "__v_raw"){
+          return Object.assign({},store, toRefs(readonlyState))
+        } else{
+          return target[key]
+        }
+      },
+      set(target, key, receiver) {
+        if (key in originState) {
+          return Reflect.set(readonlyState, key)
+        }
+        return Reflect.set(target, key, receiver)
+      },
+    })
 
     function patchActionForGrouping (actionNames) {
       // original actions of the store as they are given by pinia. We are going to override them
@@ -20,19 +36,13 @@ export default (config={}) => {
       }, {})
       for (const actionName in actions) {
         store[actionName] = function () {
-          Object.assign(store, toRefs(originState))
-          let result = actions[actionName].apply(store, arguments)
-          Object.assign(store, toRefs(readonlyState))
-          return result
+          return actions[actionName].apply(store, arguments)
         }
       }
     }
     //   devtoolsPlugin
     patchActionForGrouping(Object.keys(options.actions))
 
-    store.$subscribe((mutation, state) => {
-      console.log(345, state)
-      // 响应 store 变化
-    })
+    pinia._s.set($id, trackedStore)
   }
 }

@@ -22,7 +22,7 @@
 #### 如何使用
 ```javascript
 // 安装一下
- npm install -D pinia-plugin-readonlystate
+ npm install -S pinia-plugin-readonlystate
 
 // 在main.js
 import { createPinia } from 'pinia'
@@ -33,7 +33,7 @@ const pinia = createPinia()
 pinia.use(piniaPluginReadonlystate())
 ```
 #### 配置
-- 默认外部可以使用$patch方法来修改store可以在初始化插件的时候修改此操作
+- 默认外部可以使用$patch方法来修改store可以在初始化插件的时候禁止此操作（$reset也是基于$patch实现的也会被禁止）
 ```javascript
   let plugin = createReadonlyState({disablePatch:true})
   pinia.use(plugin)
